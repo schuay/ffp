@@ -8,13 +8,29 @@ pof2s = 1 : map (2*) pof2s -- 2^n = 2^(n-1) * 2
 
 -- 2 --
 
--- rows of Pascal's triangle
+{- Generates rows of pascal triangle. -}
+
 pd :: [[Integer]]
--- We should use map but is it allowed?
-pd = [1] : zipWith (\x y -> [y] ++ (next x) ++ [y]) pd [1,1..]
-  -- zip previous row with itself, add 1 on the ends later
-  where next :: [Integer] -> [Integer]
-        next x = zipWith (+) x (tail x)
+pd = base : pd' base
+    where base = [1]
+
+{- Generates row of pascal triangle by shifting
+ - and adding previous row as follows:
+ -
+ - l = [1, 2, 1]
+ -
+ -   a = [0, 1, 2, 1]
+ - + b = [1, 2, 1, 0]
+ - ----------------
+ - cur = [1, 3, 3, 1]
+ -
+ - Recurses infinitely. -}
+
+pd' :: [Integer] -> [[Integer]]
+pd' l = cur : pd' cur
+    where a = 0 : l
+          b = l ++ [0]
+          cur = zipWith (+) a b
 
 -- 3 --
 
@@ -38,4 +54,4 @@ fibdiags = [ fibdiag x | x <- [1..] ]
 
 -- stream of Fibonacci numbers
 fibspd :: [Integer]
-fibspd = map (foldl (+) 0) fibdiags
+fibspd = map sum fibdiags
