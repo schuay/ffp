@@ -1,4 +1,4 @@
-module FFPTest where
+module Main where
 
 import AufgabeFFP1
 import Test.HUnit
