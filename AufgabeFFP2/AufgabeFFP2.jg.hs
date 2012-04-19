@@ -12,6 +12,10 @@ primes = sieve [2..]
 sieve :: [Integer] -> [Integer]
 sieve (x:xs) = x : sieve [ y | y <- xs, y `mod` x > 0 ]
 
+pow :: Int -> Integer
+pow 0 = 1
+pow n = pow (n - 1) + pow (n - 1)
+
 {- Calculates 2^n using memoization. -}
 
 powFast :: Int -> Integer
