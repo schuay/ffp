@@ -18,8 +18,8 @@ transformer = undefined
 filter :: [LoadWghtVal] -> MaxWeight -> [LoadWghtVal]
 filter = undefined
 
-selector :: [LoadWghtVal] -> [LoadWghtVal]
-selector = undefined
+selector1 :: [LoadWghtVal] -> [LoadWghtVal]
+selector1 = undefined
 
 selector2 :: [LoadWghtVal] -> [LoadWghtVal]
 selector2 = undefined
