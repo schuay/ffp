@@ -27,17 +27,17 @@ powFast n
  -
  - fMT uses memo tables while f doesn't. -}
 
-f :: Int -> Int -> Integer
+f :: Int -> Int -> Float
 f z k = sum $ map (h z) [0..k]
 
-fMT :: Int -> Int -> Integer
+fMT :: Int -> Int -> Float
 fMT _ k | k < 0 = 0
 fMT z k = map fMT' [0..] !! k
     where fMT' 0 = 1
           fMT' i = fMT' (i - 1) + h z i
 
-h :: Int -> Int -> Integer
-h z i = z'^i `div` fac i
+h :: Int -> Int -> Float
+h z i = fromIntegral (z'^i) / fromIntegral (fac i)
     where z' = fromIntegral z
 
 facs :: [Integer]

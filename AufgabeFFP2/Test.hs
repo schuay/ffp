@@ -76,11 +76,49 @@ fEqualsfMT = TestCase $ assertEqual
     [ f z k | z <- fRange, k <- [0..20] ]
     [ fMT z k | z <- fRange, k <- [0..20] ]
 
-{- f and fMT don't make sense with Integer valued results,
- - since the elements of the series converge towards zero.
- - Add tests once this is resolved. -}
+fHardcoded1 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    [1.0,1.0,1.0,1.0,2.0]
+    (take 5 [f i j|k<-[0..],i<-[0..k],j<-[k-i]])
 
-fGroup = TestList [ fKNeg, fKZero, fKOne, fMTKNeg, fMTKZero, fMTKOne, fEqualsfMT ]
+fHardcoded2 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    "[1.0,1.0,2.716667,7.0,13.0]"
+    ((show . take 5 . drop 20) [f i j|k<-[0..],i<-[0..k],j<-[k-i]])
+
+fHardcoded3 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    "[7.266667,16.375,23.66667,18.5,7.0]"
+    ((show . take 5 . drop 30) [f i j|k<-[0..],i<-[0..k],j<-[k-i]])
+
+fHardcoded4 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    [65375,61000,32500,9000,1000]
+    ((take 5 . drop 50)[truncate (1000*f i j)|k<-[0..],i<-[0..k],j<-[k-i]])
+
+fMTHardcoded1 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    [1.0,1.0,1.0,1.0,2.0]
+    (take 5 [fMT i j|k<-[0..],i<-[0..k],j<-[k-i]])
+
+fMTHardcoded2 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    "[1.0,1.0,2.716667,7.0,13.0]"
+    ((show . take 5 . drop 20) [fMT i j|k<-[0..],i<-[0..k],j<-[k-i]])
+
+fMTHardcoded3 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    "[7.266667,16.375,23.66667,18.5,7.0]"
+    ((show . take 5 . drop 30) [fMT i j|k<-[0..],i<-[0..k],j<-[k-i]])
+
+fMTHardcoded4 = TestCase $ assertEqual
+    "f should equal hardcoded values"
+    [65375,61000,32500,9000,1000]
+    ((take 5 . drop 50)[truncate (1000*fMT i j)|k<-[0..],i<-[0..k],j<-[k-i]])
+
+fGroup = TestList [ fKNeg, fKZero, fKOne, fMTKNeg, fMTKZero, fMTKOne, fEqualsfMT,
+                    fHardcoded1, fHardcoded2, fHardcoded3, fHardcoded4,
+                    fMTHardcoded1, fMTHardcoded2, fMTHardcoded3, fMTHardcoded4 ]
 
 gzNeg = TestCase $ assertEqual
     "Negative n should equal 0"
