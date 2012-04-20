@@ -41,8 +41,8 @@ metric l@(w, v) (l', w', v') = (l:l', w + w', v + v')
 {-- Filters input to combinations which don't exceed the maximum
  - weight. --}
 
-filter :: [LoadWghtVal] -> MaxWeight -> [LoadWghtVal]
-filter xs w = Prelude.filter (\(_, w', _) -> w' <= w) xs
+filter :: MaxWeight -> [LoadWghtVal] -> [LoadWghtVal]
+filter w xs = Prelude.filter (\(_, w', _) -> w' <= w) xs
 
 {-- Selects combination(s) with the highest value. --}
 

@@ -32,13 +32,13 @@ transformerT1 = TestCase $ assertEqual
 filterEmpty = TestCase $ assertEqual
     "Empty list must result in another one"
     []
-    (filter [] 5)
+    (filter 5 [])
 
 filterT1 = TestCase $ assertEqual
     "All loads with weight > 15 should be removed"
     [([(5,13),(10,100)],15,113),([(10,100)],10,100)]
-    (sort (filter [([(5,13),(2,7),(10,100)],17,120),([(5,13),(10,100)],15,113),
-                      ([(10,100)],10,100)] 15))
+    (sort (filter 15 [([(5,13),(2,7),(10,100)],17,120),([(5,13),(10,100)],15,113),
+                      ([(10,100)],10,100)]))
 
 selector1Empty = TestCase $ assertEqual
     "Empty list must result in another one"
@@ -65,27 +65,27 @@ selector2T1 = TestCase $ assertEqual
 combinedT1 = TestCase $ assertEqual
     "Test case from Task description"
     [([(2,7),(2,6)],4,13)]
-    ((sort . selector1) ((filter . transformer . generator) [(5,3),(2,7),(2,6),(10,100)] 5))
+    ((sort . selector1) (((filter 5) . transformer . generator) [(5,3),(2,7),(2,6),(10,100)]))
 
 combinedT2 = TestCase $ assertEqual
     "Test case from Task description"
     [([(2,7),(10,100)],12,107)]
-    ((sort . selector1) ((filter . transformer . generator) [(5,3),(2,7),(2,6),(10,100)] 13))
+    ((sort . selector1) (((filter 13). transformer . generator) [(5,3),(2,7),(2,6),(10,100)]))
 
 combinedT3 = TestCase $ assertEqual
     "Test case from Task description"
     []
-    ((sort . selector1) ((filter . transformer . generator) [(5,3),(2,7),(2,6),(10,100)] 1))
+    ((sort . selector1) (((filter 1). transformer . generator) [(5,3),(2,7),(2,6),(10,100)]))
 
 combinedT4 = TestCase $ assertEqual
     "Test case from Task description"
     [([(2,7),(2,6)],4,13),([(5,13)],5,13)]
-    ((sort . selector1) ((filter . transformer . generator) [(5,13),(2,7),(2,6),(10,100)] 5))
+    ((sort . selector1) (((filter 5) . transformer . generator) [(5,13),(2,7),(2,6),(10,100)]))
 
 combinedT5 = TestCase $ assertEqual
     "Test case from Task description"
     [([(2,7),(2,6)],4,13)]
-    ((sort . selector2) ((filter . transformer . generator) [(5,13),(2,7),(2,6),(10,100)] 5))
+    ((sort . selector2) (((filter 5) . transformer . generator) [(5,13),(2,7),(2,6),(10,100)]))
 
 knapsackGroup = TestList [ generatorEmpty, generatorT1, transformerEmpty, transformerT1,
                            filterEmpty, filterT1, selector1Empty, selector1T1,
