@@ -1,6 +1,7 @@
 module AufgabeFFP4 where
 
 import Data.List (delete)
+import Data.Ix
 
 type NodeKnp = (Value, Weight, MaxWeight, [Object], SolKnp)
 type Weight = Int
@@ -54,13 +55,6 @@ knapsack objects limit
 {- Implement binomial coefficient calculation using dynamic programming.  Use
  - the functional dynamic and functions compB and bndsB. -}
 
-{- dynamic :: ...
- - dynamic = ...
- -
- - compB :: ...
- - bndsB :: ...
- -}
-
 {- Binomial coefficients, naive implementation. -}
 
 binom :: (Integer, Integer) -> Integer
@@ -68,8 +62,20 @@ binom (n,k)
     | k == 0 || n == k = 1
     | otherwise = binom (n - 1, k - 1) + binom (n - 1, k)
 
-binomDyn :: (Integer,Integer) -> Integer
-binomDyn (m,n) = undefined
+bndsB :: (Integer, Integer) -> ((Integer, Integer), (Integer, Integer))
+bndsB (n, k) = ((0, 0), (n, k))
+
+compB :: Table Integer (Integer, Integer) -> (Integer, Integer) -> Integer
+compB t (n, k)
+    | n < 0 || k < 0 || n < k = 0
+    | n == 0 || k == 0 || n == k = 1
+    | otherwise = findTable t (n - 1, k - 1) + findTable t (n - 1, k)
+
+binomDyn :: (Integer, Integer) -> Integer
+binomDyn (n, k)
+    | n < 0 || k < 0 || n < k = 0
+    | otherwise = findTable t (n, k)
+    where t = dynamic compB (bndsB (n, k))
 
 {- ----------------------------------------------------------------------------
  - searchDfs, dynamic plus all needed abstract datatypes.
@@ -102,3 +108,25 @@ push x xs     = x:xs
 
 pop (_:xs)    = xs
 top (x:_)     = x
+
+dynamic :: Ix coord => (Table entry coord -> coord -> entry)
+                        -> (coord,coord) -> (Table entry coord)
+dynamic compute bnds = t
+    where t = newTable (map (\coord ->(coord,compute t coord))
+                            (range bnds))
+
+newtype Table a b        = Tbl [(b,a)]
+    deriving Show
+
+newTable   t          = Tbl t
+
+findTable (Tbl []) i = error "item not found in table"
+findTable (Tbl ((j,v):r)) i
+     | (i==j)        = v
+     | otherwise     = findTable (Tbl r) i
+
+updTable e (Tbl [])         = (Tbl [e])
+updTable e'@(i,_) (Tbl (e@(j,_):r))
+     | (i==j)         = Tbl (e':r)
+     | otherwise      = Tbl (e:r')
+     where Tbl r' = updTable e' (Tbl r)
