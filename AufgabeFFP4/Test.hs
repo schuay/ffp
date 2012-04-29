@@ -10,12 +10,12 @@ knapsackT1 = TestCase $ assertEqual
 
 knapsackT2 = TestCase $ assertEqual
     "Load with maximum value should be selected"
-    ([(5,8),(1,1)], 9)
+    ([(1,1),(5,8)], 9)
     (knapsack [(7,9), (6,8), (5,8), (1,1), (8,10), (5,2)] 6)
 
 knapsackT3 = TestCase $ assertEqual
     "Test case from task description"
-    ([(2,3),(2,3),(3,4),(3,4)], 14)
+    ([(3,4),(3,4),(2,3),(2,3)], 14)
     (knapsack [(2,3),(2,3),(3,4),(3,4),(5,6)] 10)
 
 knapsackT4 = TestCase $ assertEqual
@@ -25,12 +25,12 @@ knapsackT4 = TestCase $ assertEqual
 
 knapsackT5 = TestCase $ assertEqual
     "Load with maximum value should be selected"
-    ([(2,7),(2,6)], 13)
+    ([(2,6),(2,7)], 13)
     (knapsack [(5,3),(2,7),(2,6),(10,100)] 5)
 
 knapsackT6 = TestCase $ assertEqual
     "Load with maximum value should be selected"
-    ([(2,7),(10,100)], 107)
+    ([(10,100),(2,7)], 107)
     (knapsack [(5,3),(2,7),(2,6),(10,100)] 13)
 
 knapsackGroup = TestList [ knapsackT1, knapsackT2, knapsackT3, knapsackT4,
