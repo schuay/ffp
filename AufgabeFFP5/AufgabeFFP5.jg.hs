@@ -7,22 +7,44 @@ import Data.Array
  - A partial sum over an array and an index range is the sum of all elements
  - in the specified range. -}
 
+psum :: Array Int Int -> (Int, Int) -> Int
+psum array (a, b)
+    | b < a' || a > b || b > b' = 0
+    | otherwise = array ! a + psum array (a + 1, b)
+    where (a', b') = bounds array
+
+ranges :: (Int, Int) -> [(Int, Int)]
+ranges (a, b)
+    | a == b = [(a, b)]
+    | otherwise = [ (a, b') | b' <- [a..b] ] ++ ranges (a + 1, b)
+
+psums :: Array Int Int -> [(Int, (Int, Int))]
+psums array = zip (map (psum array) rngs) rngs
+    where rngs = ranges $ bounds array
+
 {- mas returns the maximal partial sum of the array. -}
 mas :: Array Int Int -> Int
-mas = undefined
+mas array = maximum $ map fst (psums array)
 
 {- amas returns all index ranges with partial sum = mas. -}
 amas :: Array Int Int -> [(Int, Int)]
-amas = undefined
+amas array = map snd $ filter (\(s, _) -> s == mas') ps
+    where ps = psums array
+          mas' = maximum $ map fst ps
+
 
 {- lmas returns the longest range of amas. -}
 lmas :: Array Int Int -> (Int, Int)
-lmas = undefined
+lmas array = foldr (\a b -> if rangeSize a >= rangeSize b then a else b) (1, 0) amas'
+    where amas' = amas array
 
 {- minIndex returns the smallest index of an element satisfying f. -}
 minIndex :: (Ix a, Show a) => Array a b -> (b -> Bool) -> a
-minIndex array f = minimum $ divideAndConquer mi_indiv (mi_solve f) mi_divide
-                                              mi_combine (array, bounds array)
+minIndex array f
+    | null results = error "No matching index"
+    | otherwise = minimum results
+    where results = divideAndConquer mi_indiv (mi_solve f) mi_divide
+                                     mi_combine (array, bounds array)
 
 {- Individual element reached once the rangeSize is equal to 1. -}
 mi_indiv :: (Ix a) => (Array a b, (a, a)) -> Bool

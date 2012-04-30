@@ -4,13 +4,17 @@ import AufgabeFFP5
 import Test.HUnit
 import Data.Array
 
+a :: Array Int Int
 a = array (1,9) [(1,3),(2,(-5)),(3,0),(4,9),(5,2),(6,(-1)),(7,2),(8,(-5)),(9,1)]
+
+b :: Array Int Int
 b = array (1,9) [(1,3),(2,(-1)),(3,(-2)),(4,9),(5,2),(6,(-1)),(7,2),(8,0),(9,(-1))]
+
+c :: Array Int Int
 c = array (1,5) [(1,2),(2,3),(3,(-10)),(4,1),(5,4)]
 
 data Week = Mon | Tue | Wed | Thu | Fri | Sat | Sun deriving (Eq,Ord,Ix,Show)
 d = array (Tue,Sat) [(Wed,"work"),(Thu,"study"),(Tue,"study"),(Fri,"chill"),(Sat,"relax")]
-
 
 testMas1 = TestCase $ assertEqual
     "mas should return highest partial sum"
@@ -67,11 +71,6 @@ testMinIndex4 = TestCase $ assertEqual
     (1)
     (minIndex b (odd))
 
-testMinIndex5 = TestCase $ assertEqual
-    "minIndex should result in error if no element matches"
-    (error "No matching index") {-- This probably won't work. --}
-    (minIndex b (>100))
-
 testMinIndex6 = TestCase $ assertEqual
     "minIndex should return first index for which f evaluates to True"
     (Sat)
@@ -92,17 +91,11 @@ testMinIndex9 = TestCase $ assertEqual
     (Tue)
     (minIndex d (/="chill"))
 
-testMinIndex10 = TestCase $ assertEqual
-    "minIndex should result in error if no element matches"
-    (error "No matching index") {-- This probably won't work. --}
-    (minIndex d (=="swim"))
-
 groupMas = TestList [ testMas1, testMas2 ]
 groupAmas = TestList [ testAmas1, testAmas2, testAmas3 ]
 groupLmas = TestList [ testLmas1, testLmas2 ]
 groupMinIndex = TestList [ testMinIndex1, testMinIndex2, testMinIndex3,
-                           testMinIndex4, testMinIndex5, testMinIndex6,
-                           testMinIndex7, testMinIndex8, testMinIndex9,
-                           testMinIndex10 ]
+                           testMinIndex4, testMinIndex6, testMinIndex7,
+                           testMinIndex8, testMinIndex9 ]
 
 main = runTestTT $ TestList [ groupMas, groupAmas, groupLmas, groupMinIndex ]
