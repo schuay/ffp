@@ -22,6 +22,7 @@ LNFLAGS = -sf
 SFLAGS = -F "../.ssh-cfg"
 RFLAGS = --copy-links --chmod=o-rwxs,Dug+x,u+rw,g+r \
 		-e "$(SSH) $(SFLAGS)"
+RHFLAGS = -X-98 +o
 
 # .ssh-cfg format:
 # Host ffp-handin
@@ -47,7 +48,7 @@ test-remote: $(SOURCE) $(SRC_TEST)
 	@$(RSYNC) $(RFLAGS) $(SRC_TEST) "$(HOST):$(SRC_TEST)"
 	@$(RSYNC) $(RFLAGS) $(SOURCE) "$(HOST):$(SOURCE)"
 	@$(ECHO) "Running remote tests..."
-	@$(SSH) $(SFLAGS) $(HOST) '$(RUNHUGS) $(TEST); $(RM) -f $^'
+	@$(SSH) $(SFLAGS) $(HOST) '$(RUNHUGS) $(RHFLAGS) $(TEST); $(RM) -f $^'
 
 hand-in: $(SOURCE) test test-remote
 	@$(ECHO) "Handing in $(SOURCE)..."
