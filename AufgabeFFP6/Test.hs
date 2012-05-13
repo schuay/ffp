@@ -23,6 +23,9 @@ testEval3 = TestCase $ assertEqual
 arr :: Array Int Int
 arr = array (1,3) [(1,1),(2,2),(3,3)]
 
+arr2 :: Array Int Int
+arr2 = listArray (1, 3) [0, 0, 0]
+
 testYieldBT1 = TestCase $ assertEqual
     "Standard case"
     ([6, 6])
@@ -37,6 +40,11 @@ testYieldBT3 = TestCase $ assertEqual
     "Standard case"
     ([0, 0, 0, 0])
     (map (eval arr) $ yield_bt arr 0)
+
+testYieldBT4 = TestCase $ assertEqual
+    "Divide by zero"
+    ([0, 0, 0, 0, 0, 0, 0, 0, 0])
+    (map (eval arr2) $ yield_bt arr2 0)
 
 testYieldGTF1 = TestCase $ assertEqual
     "Standard case"
@@ -53,6 +61,11 @@ testYieldGTF3 = TestCase $ assertEqual
     ([0, 0, 0, 0])
     (map (eval arr) $ yield_gtf arr 0)
 
+testYieldGTF4 = TestCase $ assertEqual
+    "Divide by zero"
+    ([0, 0, 0, 0, 0, 0, 0, 0, 0])
+    (map (eval arr2) $ yield_gtf arr2 0)
+
 testShow1 = TestCase $ assertEqual
     "Standard case"
     ("array (1,2) [(1,plus),(2,minus)]")
@@ -65,8 +78,8 @@ testShow2 = TestCase $ assertEqual
 
 
 groupEval = TestList [ testEval1, testEval2, testEval3 ]
-groupYield = TestList [ testYieldBT1, testYieldBT2, testYieldBT3
-                      , testYieldGTF1, testYieldGTF2, testYieldGTF3
+groupYield = TestList [ testYieldBT1, testYieldBT2, testYieldBT3, testYieldBT4
+                      , testYieldGTF1, testYieldGTF2, testYieldGTF3, testYieldGTF4
                       ]
 groupShow = TestList [ testShow1, testShow2 ]
 
