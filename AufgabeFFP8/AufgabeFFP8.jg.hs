@@ -45,7 +45,7 @@ minfree_b xs = if null ([0..b - 1] \\ us)
                then head ([b..] \\ vs)
                else head ([0..] \\ us)
     where (us, vs) = partition (< b) xs
-          b = head xs
+          b = (length xs) `div` 2
 
 {- minfree_r -}
 
