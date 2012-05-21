@@ -49,12 +49,12 @@ minfree_b xs = if null ([0..b - 1] \\ us)
 {- minfree_r -}
 
 minfree_r :: [Nat] -> Nat
-minfree_r = minfrom_r 0
+minfree_r xs
+    | nub xs == xs = minfrom_r 0 xs
+    | otherwise = 0 {- Avoid infinite loops. -}
 
 minfrom_r a xs | null xs = a
                | length us == b - a = minfrom_r b vs
-               | length us == 0 && length vs > 1 = 0 {- Hack to avoid infinite loop -}
-               | length vs == 0 && length us > 1 = 0 {- if all elements are in one partition. -}
                | otherwise = minfrom_r a us
     where (us, vs) = partition (< b) xs
           n = length xs
@@ -63,12 +63,12 @@ minfrom_r a xs | null xs = a
 {- minfree_o -}
 
 minfree_o :: [Nat] -> Nat
-minfree_o xs = minfrom_o 0 (length xs, xs)
+minfree_o xs
+    | nub xs == xs = minfrom_o 0 (length xs, xs)
+    | otherwise = 0 {- Avoid infinite loops. -}
 
 minfrom_o a (n, xs) | n == 0 = a
                     | m == b - a = minfrom_o b (n - m, vs)
-                    | length us == 0 && length vs > 1 = 0 {- Hack to avoid infinite loop -}
-                    | length vs == 0 && length us > 1 = 0 {- if all elements are in one partition. -}
                     | otherwise = minfrom_o a (m, us)
     where (us, vs) = partition (< b) xs
           b = a + 1 + n `div` 2
@@ -77,7 +77,9 @@ minfrom_o a (n, xs) | n == 0 = a
 {- minfree_bhof -}
 
 minfree_bhof :: [Nat] -> Nat
-minfree_bhof xs = divideAndConquer b_indiv b_solve b_divide b_combine (xs, 0)
+minfree_bhof xs
+    | nub xs == xs = divideAndConquer b_indiv b_solve b_divide b_combine (xs, 0)
+    | otherwise = 0 {- Avoid infinite loops. -}
 
 {- A problem consists of a list of numbers, and the beginning index
  - of the current subproblem. -}
