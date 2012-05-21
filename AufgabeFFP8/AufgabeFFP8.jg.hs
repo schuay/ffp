@@ -46,7 +46,21 @@ minfree_b xs = if null ([0..b - 1] \\ us)
     where (us, vs) = partition (< b) xs
           b = head xs
 
-minfree_r = undefined
+{- minfree_r -}
+
+minfree_r :: [Nat] -> Nat
+minfree_r = minfrom_r 0
+
+minfrom_r a xs | null xs = a
+               | length us == b - a = minfrom_r b vs
+               | length us == 0 && length vs > 1 = 0 {- Hack to avoid infinite loop -}
+               | length vs == 0 && length us > 1 = 0 {- if all elements are in one partition. -}
+               | otherwise = minfrom_r a us
+    where (us, vs) = partition (< b) xs
+          n = length xs
+          b = a + 1 + n `div` 2
+
+
 minfree_o = undefined
 minfree_bhof = undefined
 minfree_rhof = undefined
