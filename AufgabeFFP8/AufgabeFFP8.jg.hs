@@ -3,6 +3,7 @@ module AufgabeFFP8 where
 import Test.QuickCheck
 import Data.List ((\\), nub, partition)
 import Data.Array
+import Data.Maybe
 
 type Nat = Int
 
@@ -76,38 +77,71 @@ minfrom_o a (n, xs) | n == 0 = a
 
 {- minfree_bhof -}
 
+{- A problem consists of a list of numbers, the beginning index,
+ - and whether a split has occurred. -}
+type ProblemB = ([Nat], Int, Bool)
+
 minfree_bhof :: [Nat] -> Nat
 minfree_bhof xs
-    | nub xs == xs = divideAndConquer b_indiv b_solve b_divide b_combine (xs, 0)
+    | nub xs == xs = fromMaybe 0 dac
     | otherwise = 0 {- Avoid infinite loops. -}
+    where dac = divideAndConquer b_indiv b_solve b_divide b_combine (xs, 0, False)
 
-{- A problem consists of a list of numbers, and the beginning index
+b_indiv :: ProblemB -> Bool
+b_indiv (_, _, b) = b
+
+b_solve :: ProblemB -> Maybe Int
+b_solve (xs, i, _) | null xs = Just first
+                   | i == 0 && first < n = Just first  -- LHS
+                   | i /= 0 && first >= i = Just first -- RHS
+                   | otherwise = Nothing
+    where first = head ([i..] \\ xs)
+          n = length xs
+
+b_divide :: ProblemB -> [ProblemB]
+b_divide (xs, i, _) = [ (us, i, True), (vs, b, True) ]
+    where (us, vs) = partition (< b) xs
+          n = length xs
+          b = if i + n `div` 2 == 0 then 1 else i + n `div` 2
+
+b_combine :: ProblemB -> [Maybe Int] -> Maybe Int
+b_combine _ xs
+    | null xs' = Nothing
+    | otherwise = Just (minimum xs')
+    where xs' = catMaybes xs
+
+{- minfree_rhof -}
+
+{- A problem consists of a list of numbers, and the beginning and end indices
  - of the current subproblem. -}
-type Problem = ([Nat], Int)
+type ProblemR = ([Nat], Int, Int)
 
-{- Yet another hack necessary to avoid infinite loops
- - with duplicate elements. -}
-b_indiv :: Problem -> Bool
-b_indiv (xs, i) = null xs ||
-                  (null us && length vs > 0) ||
-                  (null vs && length us > 0)
+minfree_rhof :: [Nat] -> Nat
+minfree_rhof xs
+    | nub xs == xs = fromMaybe (length xs) dac
+    | otherwise = 0 {- Avoid infinite loops. -}
+    where dac = divideAndConquer r_indiv r_solve r_divide r_combine (xs, 0, length xs - 1)
+
+r_indiv :: ProblemR -> Bool
+r_indiv (_, a, b) = b - a + 1 <= 1
+
+r_solve :: ProblemR -> Maybe Int
+r_solve ([], a, _) = Just a
+r_solve (x:xs, a, _) | x == a = Nothing
+                     | otherwise = Just a
+
+r_divide :: ProblemR -> [ProblemR]
+r_divide (xs, a, c) = [ (us, a, b - 1), (vs, b, c) ]
     where (us, vs) = partition (< b) xs
-          n = length xs
-          b = i + n `div` 2
+          n = c - a + 1
+          b = a + (n + 1) `div` 2
 
-b_solve :: Problem -> Int
-b_solve (_, i) = i
+r_combine :: ProblemR -> [Maybe Int] -> Maybe Int
+r_combine _ xs
+    | null xs' = Nothing
+    | otherwise = Just (minimum xs')
+    where xs' = catMaybes xs
 
-b_divide :: Problem -> [Problem]
-b_divide (xs, i) = [ (us, i), (vs, b) ]
-    where (us, vs) = partition (< b) xs
-          n = length xs
-          b = i + n `div` 2
-
-b_combine :: Problem -> [Int] -> Int
-b_combine _ = minimum
-
-minfree_rhof = undefined
 minfree_ohof = undefined
 
 {- The divide and conquer function from
