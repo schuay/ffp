@@ -33,7 +33,7 @@ minfree_col = search . countlist
 
 countlist :: [Int] -> Array Int Int
 countlist xs = accumArray (+) 0 (0, n) (zip xs (repeat 1))
-    where n = length xs
+    where n = if null xs then 0 else  maximum xs
 
 {- minfree_b
  - 
