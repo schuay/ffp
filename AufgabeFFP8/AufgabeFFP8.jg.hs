@@ -74,21 +74,39 @@ minfrom_o a (n, xs) | n == 0 = a
           b = a + 1 + n `div` 2
           m = length us
 
-minfree_bhof = undefined
+{- minfree_bhof -}
+
+minfree_bhof :: [Nat] -> Nat
+minfree_bhof xs = divideAndConquer b_indiv b_solve b_divide b_combine (xs, 0)
+
+{- A problem consists of a list of numbers, and the beginning index
+ - of the current subproblem. -}
+type Problem = ([Nat], Int)
+
+{- Yet another hack necessary to avoid infinite loops
+ - with duplicate elements. -}
+b_indiv :: Problem -> Bool
+b_indiv (xs, i) = null xs ||
+                  (null us && length vs > 0) ||
+                  (null vs && length us > 0)
+    where (us, vs) = partition (< b) xs
+          n = length xs
+          b = i + n `div` 2
+
+b_solve :: Problem -> Int
+b_solve (_, i) = i
+
+b_divide :: Problem -> [Problem]
+b_divide (xs, i) = [ (us, i), (vs, b) ]
+    where (us, vs) = partition (< b) xs
+          n = length xs
+          b = i + n `div` 2
+
+b_combine :: Problem -> [Int] -> Int
+b_combine _ = minimum
+
 minfree_rhof = undefined
 minfree_ohof = undefined
-
-b_indiv :: p -> Bool
-b_indiv = undefined
-
-b_solve :: p -> s
-b_solve = undefined
-
-b_divide :: p -> [p]
-b_divide = undefined
-
-b_combine :: p -> [s] -> s
-b_combine = undefined
 
 {- The divide and conquer function from
  - http://www.iro.umontreal.ca/~lapalme/AlgoFP/ -}
