@@ -60,8 +60,20 @@ minfrom_r a xs | null xs = a
           n = length xs
           b = a + 1 + n `div` 2
 
+{- minfree_o -}
 
-minfree_o = undefined
+minfree_o :: [Nat] -> Nat
+minfree_o xs = minfrom_o 0 (length xs, xs)
+
+minfrom_o a (n, xs) | n == 0 = a
+                    | m == b - a = minfrom_o b (n - m, vs)
+                    | length us == 0 && length vs > 1 = 0 {- Hack to avoid infinite loop -}
+                    | length vs == 0 && length us > 1 = 0 {- if all elements are in one partition. -}
+                    | otherwise = minfrom_o a (m, us)
+    where (us, vs) = partition (< b) xs
+          b = a + 1 + n `div` 2
+          m = length us
+
 minfree_bhof = undefined
 minfree_rhof = undefined
 minfree_ohof = undefined
