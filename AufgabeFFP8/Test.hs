@@ -3,6 +3,7 @@ module Main where
 import AufgabeFFP8
 import Test.HUnit
 
+uniqTests :: [(String, Int, [Int])]
 uniqTests =
         [ ("Empty list", 0, [])
         , ("Unsorted list, free at front", 0, [2,3,1])
@@ -11,6 +12,8 @@ uniqTests =
         , ("Unsorted list, free at end", 3, [2,1,0])
         , ("Unsorted list, free at end", 1, [0])
         ]
+
+dupTests :: [(String, Int, [Int])]
 dupTests =
         [ ("Unsorted list with duplicates, free at front", 0, [2,2,3,1,3])
         , ("Unsorted list with duplicates, free in middle", 2, [0,1,0,3,1])
