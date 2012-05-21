@@ -2,6 +2,7 @@ module AufgabeFFP8 where
 
 import Test.QuickCheck
 import Data.List ((\\), nub)
+import Data.Array
 
 type Nat = Int
 
@@ -10,7 +11,18 @@ type Nat = Int
 minfree_bv :: [Nat] -> Nat
 minfree_bv xs = head ([0..] \\ xs)
 
-minfree_chl = undefined
+{- minfree_chl -}
+
+minfree_chl :: [Nat] -> Nat
+minfree_chl = search . checklist
+    where search :: Array Int Bool -> Int
+          search = length . takeWhile id . elems
+
+checklist :: [Int] -> Array Int Bool
+checklist xs = accumArray (||) False (0, n)
+               (zip (filter (<= n) xs) (repeat True))
+    where n = length xs
+
 minfree_col = undefined
 minfree_b = undefined
 minfree_r = undefined
