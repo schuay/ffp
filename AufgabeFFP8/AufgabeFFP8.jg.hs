@@ -23,7 +23,17 @@ checklist xs = accumArray (||) False (0, n)
                (zip (filter (<= n) xs) (repeat True))
     where n = length xs
 
-minfree_col = undefined
+{- minfree_col -}
+
+minfree_col :: [Nat] -> Nat
+minfree_col = search . countlist
+    where search :: Array Int Int -> Int
+          search = length . takeWhile (/= 0) . elems
+
+countlist :: [Int] -> Array Int Int
+countlist xs = accumArray (+) 0 (0, n) (zip xs (repeat 1))
+    where n = length xs
+
 minfree_b = undefined
 minfree_r = undefined
 minfree_o = undefined
