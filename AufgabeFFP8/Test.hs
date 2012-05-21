@@ -6,6 +6,7 @@ import Test.HUnit
 tests = [ ("Empty list", 0, [])
         , ("Unsorted list, free at front", 0, [2,3,1])
         , ("Unsorted list, free in middle", 2, [1,0,3])
+        , ("Unsorted list, free in middle", 5, [1,0,3,10,2,11,20,103,4,6,12])
         , ("Unsorted list, free at end", 3, [2,1,0])
         , ("Unsorted list with duplicates, free at front", 0, [2,2,3,1,3])
         , ("Unsorted list with duplicates, free in middle", 2, [0,1,0,3,1])
