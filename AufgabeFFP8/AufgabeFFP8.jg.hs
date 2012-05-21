@@ -19,6 +19,25 @@ minfree_bhof = undefined
 minfree_rhof = undefined
 minfree_ohof = undefined
 
+b_indiv :: p -> Bool
+b_indiv = undefined
+
+b_solve :: p -> s
+b_solve = undefined
+
+b_divide :: p -> [p]
+b_divide = undefined
+
+b_combine :: p -> [s] -> s
+b_combine = undefined
+
+{- The divide and conquer function from
+ - http://www.iro.umontreal.ca/~lapalme/AlgoFP/ -}
+divideAndConquer :: (p -> Bool) -> (p -> s) -> (p -> [p]) -> (p -> [s] -> s) -> p -> s
+divideAndConquer ind solve divide combine initPb = dc' initPb
+    where dc' pb | ind pb  = solve pb
+                 | otherwise = combine pb (map dc' (divide pb))
+
 {- TODO: The specification is (surprise) inconsistent
  - in reference to the required quickcheck tests.
  -
