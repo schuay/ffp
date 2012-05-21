@@ -1,7 +1,7 @@
 module AufgabeFFP8 where
 
 import Test.QuickCheck
-import Data.List ((\\))
+import Data.List ((\\), nub)
 
 type Nat = Int
 
@@ -19,16 +19,32 @@ minfree_bhof = undefined
 minfree_rhof = undefined
 minfree_ohof = undefined
 
-{-
-prop_ssfn_eq_minfree_a :: [Nat] -> Bool
-prop_ssfn_eq_minfree_a x = ssfn [ fromIntegral a | a<-x ]
-                           == fromIntegral (minfree x)
+{- TODO: The specification is (surprise) inconsistent
+ - in reference to the required quickcheck tests.
+ -
+ - It mentions testing nonduplicate lists (these should never fail),
+ - and duplicate lists (these can differ), but then goes on
+ - to describe the same properties as FFP7. For now,
+ - assume that prop_allImplsEq_a tests all lists, and prop_allImplsEq_b
+ - tests lists without duplicates. -}
 
-invariant_nat_nums :: [Nat] -> Bool
-invariant_nat_nums x = and (map (>=0) x)
+minfree_fns = [ minfree_bv, minfree_chl, minfree_col
+              , minfree_b, minfree_r, minfree_o
+              , minfree_bhof, minfree_rhof, minfree_ohof
+              ]
 
-prop_ssfn_eq_minfree_b :: [Nat] -> Property
-prop_ssfn_eq_minfree_b x = invariant_nat_nums x ==>
-                           ssfn [ fromIntegral a | a<-x ]
-			   == fromIntegral (minfree x)
--}
+prop_allImplsEq_a :: [Nat] -> Bool
+prop_allImplsEq_a x = all (== reference) results
+    where x' = map abs x
+          reference = minfree_bv x'
+          results = [ f x' | f <- minfree_fns ]
+
+invariant_no_dupes :: [Nat] -> Bool
+invariant_no_dupes x = nub x == x
+
+prop_allImplsEq_b :: [Nat] -> Property
+prop_allImplsEq_b x = invariant_no_dupes x ==> 
+                      all (== reference) results
+    where x' = map abs x
+          reference = minfree_bv x'
+          results = [ f x' | f <- minfree_fns ]
