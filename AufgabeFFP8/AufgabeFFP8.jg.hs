@@ -1,7 +1,7 @@
 module AufgabeFFP8 where
 
 import Test.QuickCheck
-import Data.List ((\\), nub)
+import Data.List ((\\), nub, partition)
 import Data.Array
 
 type Nat = Int
@@ -34,7 +34,18 @@ countlist :: [Int] -> Array Int Int
 countlist xs = accumArray (+) 0 (0, n) (zip xs (repeat 1))
     where n = length xs
 
-minfree_b = undefined
+{- minfree_b
+ - 
+ - The implementation from the slides is incomplete (the definition of
+ - b is missing). Also, I don't see much of a divide and conquer approach here. -}
+
+minfree_b :: [Nat] -> Nat
+minfree_b xs = if null ([0..b - 1] \\ us)
+               then head ([b..] \\ vs)
+               else head ([0..] \\ us)
+    where (us, vs) = partition (< b) xs
+          b = head xs
+
 minfree_r = undefined
 minfree_o = undefined
 minfree_bhof = undefined
