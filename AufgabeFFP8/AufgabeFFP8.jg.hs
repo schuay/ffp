@@ -142,7 +142,26 @@ r_combine _ xs
     | otherwise = Just (minimum xs')
     where xs' = catMaybes xs
 
-minfree_ohof = undefined
+{- minfree_ohof -}
+
+minfree_ohof :: [Nat] -> Nat
+minfree_ohof xs
+    | nub xs == xs = fromMaybe n dac
+    | otherwise = 0 {- Avoid infinite loops. -}
+    where dac = divideAndConquer o_indiv o_solve o_divide o_combine (xs, 0, n - 1)
+          n = length xs
+
+o_indiv :: ProblemR -> Bool
+o_indiv = r_indiv
+
+o_solve :: ProblemR -> Maybe Int
+o_solve = r_solve
+
+o_divide :: ProblemR -> [ProblemR]
+o_divide = r_divide
+
+o_combine :: ProblemR -> [Maybe Int] -> Maybe Int
+o_combine = r_combine
 
 {- The divide and conquer function from
  - http://www.iro.umontreal.ca/~lapalme/AlgoFP/ -}
