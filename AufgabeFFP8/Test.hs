@@ -7,6 +7,7 @@ uniqTests :: [(String, Int, [Int])]
 uniqTests =
         [ ("Empty list", 0, [])
         , ("Unsorted list, free at front", 0, [2,3,1])
+        , ("Unsorted list, free at front", 0, [999999999])
         , ("Unsorted list, free in middle", 2, [1,0,3])
         , ("Unsorted list, free in middle", 5, [1,0,3,10,2,11,20,103,4,6,12])
         , ("Unsorted list, free in middle", 1, [2,3,0,4])
