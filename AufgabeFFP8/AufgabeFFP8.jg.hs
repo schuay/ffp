@@ -77,29 +77,26 @@ minfrom_o a (n, xs) | n == 0 = a
 
 {- minfree_bhof -}
 
-{- A problem consists of a list of numbers, the beginning index,
+{- A problem consists of a list of numbers, the beginning and end indices
  - and whether a split has occurred. -}
-type ProblemB = ([Nat], Int, Bool)
+type ProblemB = ([Nat], Int, Int, Bool)
 
 minfree_bhof :: [Nat] -> Nat
 minfree_bhof xs
-    | nub xs == xs = fromMaybe 0 dac
+    | nub xs == xs = fromMaybe (length xs) dac
     | otherwise = 0 {- Avoid infinite loops. -}
-    where dac = divideAndConquer b_indiv b_solve b_divide b_combine (xs, 0, False)
+    where dac = divideAndConquer b_indiv b_solve b_divide b_combine (xs, 0, length xs - 1, False)
 
 b_indiv :: ProblemB -> Bool
-b_indiv (_, _, b) = b
+b_indiv (_, _, _, b) = b
 
 b_solve :: ProblemB -> Maybe Int
-b_solve (xs, i, _) | null xs = Just first
-                   | i == 0 && first < n = Just first  -- LHS
-                   | i /= 0 && first >= i = Just first -- RHS
-                   | otherwise = Nothing
-    where first = head ([i..] \\ xs)
-          n = length xs
+b_solve (xs, i, j, _) | null first = Nothing
+                      | otherwise = Just $ head first
+    where first = [i..j] \\ xs
 
 b_divide :: ProblemB -> [ProblemB]
-b_divide (xs, i, _) = [ (us, i, True), (vs, b, True) ]
+b_divide (xs, i, j, _) = [ (us, i, b - 1, True), (vs, b, j, True) ]
     where (us, vs) = partition (< b) xs
           n = length xs
           b = if i + n `div` 2 == 0 then 1 else i + n `div` 2
@@ -194,7 +191,7 @@ invariant_no_dupes :: [Nat] -> Bool
 invariant_no_dupes x = nub x == x
 
 prop_allImplsEq_b :: [Nat] -> Property
-prop_allImplsEq_b x = invariant_no_dupes x ==> 
+prop_allImplsEq_b x = invariant_no_dupes x' ==>
                       all (== reference) results
     where x' = map abs x
           reference = minfree_bv x'
